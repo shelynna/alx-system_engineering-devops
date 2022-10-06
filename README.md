@@ -1,1 +1,1 @@
-My first readme for system engineering devops
+This repository contains solutions to shell tasks
