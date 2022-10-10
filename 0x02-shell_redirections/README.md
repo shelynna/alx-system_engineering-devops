@@ -1,1 +1,1 @@
- the script displays 10 lines
+5-firstlines
