@@ -1,1 +1,1 @@
-didplays two contents
+ the script displays 10 lines
