@@ -1,1 +1,1 @@
-Shell initializing files variables and expansions
+ still creating scripts on task 3-7
