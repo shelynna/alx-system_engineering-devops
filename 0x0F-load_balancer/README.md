@@ -26,4 +26,4 @@ What you should learn from this project:
 ---
 
 ## Author
-* **Dairo Facundo Duarte** - [dairof7](https://github.com/dairof7)
+* **Shelynna
