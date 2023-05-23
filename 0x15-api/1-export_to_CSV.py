@@ -1,39 +1,34 @@
 #!/usr/bin/python3
-
-"""[task 1, get and save on csv]
-"""
+""" Script that uses JSONPlaceholder API to get information about employee """
 import csv
 import requests
-from sys import argv
+import sys
 
 
-def get_user(id):
-    """get the user
-    Args:
-        id (integer: user id]
-    """
+if __name__ == "__main__":
     url = 'https://jsonplaceholder.typicode.com/'
-    users = requests.get(url + 'users', params={'id': id}).json()
-    todos = requests.get(url + 'todos', params={'userId': id}).json()
-    return([users, todos])
 
+    userid = sys.argv[1]
+    user = '{}users/{}'.format(url, userid)
+    res = requests.get(user)
+    json_o = res.json()
+    name = json_o.get('username')
 
-def store_csv(data):
-    """data to csv
+    todos = '{}todos?userId={}'.format(url, userid)
+    res = requests.get(todos)
+    tasks = res.json()
+    l_task = []
+    for task in tasks:
+        l_task.append([userid,
+                       name,
+                       task.get('completed'),
+                       task.get('title')])
 
-    Args:
-        data (list): users and todos
-    """
-    users = data[0]
-    todos = data[1]
-    username = users[0]['username']
-    with open(argv[1] + '.csv', 'w', newline='') as f:
-        towrite = csv.writer(f, quoting=csv.QUOTE_ALL)
-        for task in todos:
-            towrite.writerow([task['userId'], username,
-                             task['completed'], task['title']])
-
-
-if __name__ == '__main__':
-    data = get_user(argv[1])
-    store_csv(data)
+    filename = '{}.csv'.format(userid)
+    with open(filename, mode='w') as employee_file:
+        employee_writer = csv.writer(employee_file,
+                                     delimiter=',',
+                                     quotechar='"',
+                                     quoting=csv.QUOTE_ALL)
+        for task in l_task:
+            employee_writer.writerow(task)

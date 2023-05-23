@@ -1,45 +1,30 @@
 #!/usr/bin/python3
-
-"""[task 1, get and save on json]
-"""
+""" Script that uses JSONPlaceholder API to get information about employee """
 import json
 import requests
-from sys import argv
+import sys
 
 
-def get_user(id):
-    """get the user
-    Args:
-        id (integer: user id]
-    """
+if __name__ == "__main__":
     url = 'https://jsonplaceholder.typicode.com/'
-    users = requests.get(url + 'users', params={'id': id}).json()
-    todos = requests.get(url + 'todos', params={'userId': id}).json()
-    return([users, todos])
 
+    userid = sys.argv[1]
+    user = '{}users/{}'.format(url, userid)
+    res = requests.get(user)
+    json_o = res.json()
+    name = json_o.get('username')
 
-def store_csv(data):
-    """data to json
+    todos = '{}todos?userId={}'.format(url, userid)
+    res = requests.get(todos)
+    tasks = res.json()
+    l_task = []
+    for task in tasks:
+        dict_task = {"task": task.get('title'),
+                     "completed": task.get('completed'),
+                     "username": name}
+        l_task.append(dict_task)
 
-    Args:
-        data (list): users and todos
-    """
-
-    users = data[0]
-    todos = data[1]
-    username = users[0]['username']
-    info = {}
-    list_items = []
-    for task in todos:
-        list_items.append({
-                                'task': task['title'],
-                                'completed': task['completed'],
-                                'username': username})
-    info[task['userId']] = list_items
-    with open(str(argv[1]) + '.json', 'w') as f:
-        json.dump(info, f)
-
-
-if __name__ == '__main__':
-    data = get_user(argv[1])
-    store_csv(data)
+    d_task = {str(userid): l_task}
+    filename = '{}.json'.format(userid)
+    with open(filename, mode='w') as f:
+        json.dump(d_task, f)

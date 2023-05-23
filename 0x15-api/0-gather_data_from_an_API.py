@@ -1,37 +1,25 @@
 #!/usr/bin/python3
-
-"""[task 0, get rest api]
-"""
+""" Script that uses JSONPlaceholder API to get information about employee """
 import requests
-from sys import argv
+import sys
 
 
-def get_user(id):
-    """get the user
-    Args:
-        id (integer: user id]
-    """
+if __name__ == "__main__":
     url = 'https://jsonplaceholder.typicode.com/'
-    users = requests.get(url + 'users', params={'id': id}).json()
-    name = users[0]['name']
-    url = 'https://jsonplaceholder.typicode.com/'
-    todos = requests.get(url + 'todos', params={'userId': id}).json()
-    return([name, todos])
 
+    user = '{}users/{}'.format(url, sys.argv[1])
+    res = requests.get(user)
+    json_o = res.json()
+    print("Employee {} is done with tasks".format(json_o.get('name')), end="")
 
-def show(data):
-    name = data[0]
-    todos = data[1]
-    n = 0
-    str_to_print = ''
-    for task in todos:
-        if task['completed'] is True:
-            n += 1
-            str_to_print += '\t ' + task['title'] + '\n'
-    print('Employee {} is done with tasks({}/{}):'.format(name, n, len(todos)))
-    print(str_to_print, end='')
+    todos = '{}todos?userId={}'.format(url, sys.argv[1])
+    res = requests.get(todos)
+    tasks = res.json()
+    l_task = []
+    for task in tasks:
+        if task.get('completed') is True:
+            l_task.append(task)
 
-
-if __name__ == '__main__':
-    data = get_user(argv[1])
-    show(data)
+    print("({}/{}):".format(len(l_task), len(tasks)))
+    for task in l_task:
+        print("\t {}".format(task.get("title")))
